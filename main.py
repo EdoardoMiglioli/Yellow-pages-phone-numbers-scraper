@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+import re
 import time
 
 business_infos = []
@@ -20,12 +21,15 @@ def get_phone_numbers(ul_element):
     phone_numbers = ""
 
     li_elements = ul_element.find_elements(By.TAG_NAME, "li")
-    print(li_elements)
     
     for li_element in li_elements:
-        phone_number = li_element.text
-        print(phone_number)
-        phone_numbers += f"{li_element} "
+        li_element_innerHTML = li_element.get_attribute("innerHTML")
+        print(type(li_element_innerHTML))
+        CLEANR = re.compile('<.*?>') 
+        raw_phone_number = re.sub(CLEANR, '', li_element_innerHTML)
+        phone_number = int(''.join(i for i in raw_phone_number if i.isdigit()))
+        print("phone numebr: ", phone_number)
+        phone_numbers += f"{phone_number} "
 
     return phone_numbers
 
